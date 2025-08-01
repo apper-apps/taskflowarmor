@@ -3,33 +3,33 @@ import { format } from "date-fns";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-import ProjectModal from "@/components/organisms/ProjectModal";
+import TeamModal from "@/components/organisms/TeamModal";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { projectService } from "@/services/api/projectService";
+import { teamService } from "@/services/api/teamService";
 import { taskService } from "@/services/api/taskService";
 
-const ProjectsView = ({ searchQuery }) => {
-  const [projects, setProjects] = useState([]);
+const TeamsView = ({ searchQuery }) => {
+  const [teams, setTeams] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
 
   const loadData = async () => {
     try {
       setLoading(true);
       setError("");
-      const [projectsData, tasksData] = await Promise.all([
-        projectService.getAll(),
+      const [teamsData, tasksData] = await Promise.all([
+        teamService.getAll(),
         taskService.getAll()
       ]);
-      setProjects(projectsData);
+      setTeams(teamsData);
       setTasks(tasksData);
     } catch (err) {
-      setError("Failed to load projects");
+      setError("Failed to load teams");
       console.error("Error loading data:", err);
     } finally {
       setLoading(false);
@@ -40,53 +40,53 @@ const ProjectsView = ({ searchQuery }) => {
     loadData();
   }, []);
 
-  const handleCreateProject = () => {
-    setSelectedProject(null);
-    setIsProjectModalOpen(true);
+  const handleCreateTeam = () => {
+    setSelectedTeam(null);
+    setIsTeamModalOpen(true);
   };
 
-  const handleEditProject = (project) => {
-    setSelectedProject(project);
-    setIsProjectModalOpen(true);
+  const handleEditTeam = (team) => {
+    setSelectedTeam(team);
+    setIsTeamModalOpen(true);
   };
 
-  const handleSaveProject = async (projectData) => {
+  const handleSaveTeam = async (teamData) => {
     try {
-      if (selectedProject) {
-        const updatedProject = await projectService.update(selectedProject.Id, projectData);
-        setProjects(prev => prev.map(p => p.Id === selectedProject.Id ? updatedProject : p));
-        toast.success("Project updated successfully!");
+      if (selectedTeam) {
+        const updatedTeam = await teamService.update(selectedTeam.Id, teamData);
+        setTeams(prev => prev.map(t => t.Id === selectedTeam.Id ? updatedTeam : t));
+        toast.success("Team updated successfully!");
       } else {
-        const newProject = await projectService.create(projectData);
-        setProjects(prev => [...prev, newProject]);
-        toast.success("Project created successfully!");
+        const newTeam = await teamService.create(teamData);
+        setTeams(prev => [...prev, newTeam]);
+        toast.success("Team created successfully!");
       }
     } catch (err) {
-      toast.error("Failed to save project");
-      console.error("Error saving project:", err);
+      toast.error("Failed to save team");
+      console.error("Error saving team:", err);
     }
   };
 
-  const handleDeleteProject = async (projectId) => {
-    const projectTasks = tasks.filter(task => task.projectId === projectId);
-    if (projectTasks.length > 0) {
-      toast.error("Cannot delete project with existing tasks");
+  const handleDeleteTeam = async (teamId) => {
+    const teamTasks = tasks.filter(task => task.projectId === teamId);
+    if (teamTasks.length > 0) {
+      toast.error("Cannot delete team with existing tasks");
       return;
     }
 
-    if (window.confirm("Are you sure you want to delete this project?")) {
+    if (window.confirm("Are you sure you want to delete this team?")) {
       try {
-        await projectService.delete(projectId);
-        setProjects(prev => prev.filter(p => p.Id !== projectId));
-        toast.success("Project deleted successfully!");
+        await teamService.delete(teamId);
+        setTeams(prev => prev.filter(t => t.Id !== teamId));
+        toast.success("Team deleted successfully!");
       } catch (err) {
-        toast.error("Failed to delete project");
-        console.error("Error deleting project:", err);
+        toast.error("Failed to delete team");
+        console.error("Error deleting team:", err);
       }
     }
   };
 
-  const getProjectColorClass = (color) => {
+  const getTeamColorClass = (color) => {
     const colorMap = {
       blue: "bg-blue-500",
       green: "bg-green-500",
@@ -100,36 +100,36 @@ const ProjectsView = ({ searchQuery }) => {
     return colorMap[color] || "bg-gray-500";
   };
 
-  const getProjectStats = (projectId) => {
-    const projectTasks = tasks.filter(task => task.projectId === projectId);
-    const completedTasks = projectTasks.filter(task => task.status === "done");
-    const inProgressTasks = projectTasks.filter(task => task.status === "in-progress");
+  const getTeamStats = (teamId) => {
+    const teamTasks = tasks.filter(task => task.projectId === teamId);
+    const completedTasks = teamTasks.filter(task => task.status === "done");
+    const inProgressTasks = teamTasks.filter(task => task.status === "in-progress");
     
     return {
-      total: projectTasks.length,
+      total: teamTasks.length,
       completed: completedTasks.length,
       inProgress: inProgressTasks.length,
-      completionRate: projectTasks.length > 0 ? Math.round((completedTasks.length / projectTasks.length) * 100) : 0
+      completionRate: teamTasks.length > 0 ? Math.round((completedTasks.length / teamTasks.length) * 100) : 0
     };
   };
 
-  const filteredProjects = projects.filter(project => {
+  const filteredTeams = teams.filter(team => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
-    return project.name.toLowerCase().includes(query);
+    return team.name.toLowerCase().includes(query);
   });
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadData} />;
 
-  if (filteredProjects.length === 0 && !searchQuery) {
+  if (filteredTeams.length === 0 && !searchQuery) {
     return (
       <Empty
-        title="No projects yet"
-        description="Create your first project to organize your tasks and track progress."
-        actionLabel="Create Project"
-        onAction={handleCreateProject}
-        icon="Folder"
+        title="No teams yet"
+        description="Create your first team to organize your tasks and track progress."
+        actionLabel="Create Team"
+        onAction={handleCreateTeam}
+        icon="Users"
       />
     );
   }
@@ -138,52 +138,52 @@ const ProjectsView = ({ searchQuery }) => {
     <div className="flex-1 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Teams</h1>
           <p className="text-gray-600 mt-1">
-            Organize and track your projects with detailed progress insights
+            Organize and track your teams with detailed progress insights
           </p>
         </div>
         
-        <Button onClick={handleCreateProject}>
+        <Button onClick={handleCreateTeam}>
           <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
-          New Project
+          New Team
         </Button>
       </div>
 
-      {searchQuery && filteredProjects.length === 0 ? (
+      {searchQuery && filteredTeams.length === 0 ? (
         <Empty
-          title="No projects found"
-          description={`No projects match your search for "${searchQuery}". Try a different search term.`}
+          title="No teams found"
+          description={`No teams match your search for "${searchQuery}". Try a different search term.`}
           actionLabel="Clear Search"
           onAction={() => {}}
           icon="Search"
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => {
-            const stats = getProjectStats(project.Id);
+          {filteredTeams.map((team) => {
+            const stats = getTeamStats(team.Id);
             return (
               <div
-                key={project.Id}
+                key={team.Id}
                 className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 hover:-translate-y-1"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-4 h-4 rounded-full ${getProjectColorClass(project.color)}`} />
+                    <div className={`w-4 h-4 rounded-full ${getTeamColorClass(team.color)}`} />
                     <h3 className="font-semibold text-gray-900 text-lg">
-                      {project.name}
+                      {team.name}
                     </h3>
                   </div>
                   
                   <div className="flex items-center space-x-1">
                     <button
-                      onClick={() => handleEditProject(project)}
+                      onClick={() => handleEditTeam(team)}
                       className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       <ApperIcon name="Edit2" className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleDeleteProject(project.Id)}
+                      onClick={() => handleDeleteTeam(team.Id)}
                       className="p-1 text-gray-400 hover:text-red-500 transition-colors"
                     >
                       <ApperIcon name="Trash2" className="w-4 h-4" />
@@ -200,7 +200,7 @@ const ProjectsView = ({ searchQuery }) => {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className={`h-2 rounded-full transition-all duration-300 ${getProjectColorClass(project.color)}`}
+                      className={`h-2 rounded-full transition-all duration-300 ${getTeamColorClass(team.color)}`}
                       style={{ width: `${stats.completionRate}%` }}
                     />
                   </div>
@@ -230,7 +230,7 @@ const ProjectsView = ({ searchQuery }) => {
                 <div className="pt-4 border-t border-gray-100">
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>Created</span>
-                    <span>{format(new Date(project.createdAt), "MMM d, yyyy")}</span>
+                    <span>{format(new Date(team.createdAt), "MMM d, yyyy")}</span>
                   </div>
                 </div>
               </div>
@@ -239,14 +239,14 @@ const ProjectsView = ({ searchQuery }) => {
         </div>
       )}
 
-      <ProjectModal
-        isOpen={isProjectModalOpen}
-        onClose={() => setIsProjectModalOpen(false)}
-        project={selectedProject}
-        onSave={handleSaveProject}
+      <TeamModal
+        isOpen={isTeamModalOpen}
+        onClose={() => setIsTeamModalOpen(false)}
+        team={selectedTeam}
+        onSave={handleSaveTeam}
       />
     </div>
   );
 };
 
-export default ProjectsView;
+export default TeamsView;

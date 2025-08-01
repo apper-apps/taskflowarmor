@@ -3,14 +3,14 @@ import { NavLink } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 
-const Sidebar = ({ projects, onCreateProject, onCreateTask }) => {
+const Sidebar = ({ teams, onCreateTeam, onCreateTask }) => {
   const navigationItems = [
     { to: "/", icon: "LayoutGrid", label: "Board View" },
     { to: "/list", icon: "List", label: "List View" },
-    { to: "/projects", icon: "Folder", label: "Projects" }
+{ to: "/teams", icon: "Users", label: "Teams" }
   ];
 
-  const getProjectColorClass = (color) => {
+const getTeamColorClass = (color) => {
     const colorMap = {
       blue: "bg-blue-500",
       green: "bg-green-500",
@@ -58,11 +58,11 @@ const Sidebar = ({ projects, onCreateProject, onCreateTask }) => {
             ))}
           </nav>
 
-          <div className="px-6 mt-6">
+<div className="px-6 mt-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-gray-900">Projects</h3>
+              <h3 className="text-sm font-semibold text-gray-900">Teams</h3>
               <button
-                onClick={onCreateProject}
+                onClick={onCreateTeam}
                 className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <ApperIcon name="Plus" className="w-4 h-4" />
@@ -70,18 +70,18 @@ const Sidebar = ({ projects, onCreateProject, onCreateTask }) => {
             </div>
             
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {projects.map((project) => (
+              {teams.map((team) => (
                 <div
-                  key={project.Id}
+                  key={team.Id}
                   className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <div className={`w-3 h-3 rounded-full ${getProjectColorClass(project.color)}`} />
+                  <div className={`w-3 h-3 rounded-full ${getTeamColorClass(team.color)}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      {project.name}
+                      {team.name}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {project.taskCount} tasks
+                      {team.taskCount} tasks
                     </p>
                   </div>
                 </div>
@@ -96,13 +96,13 @@ const Sidebar = ({ projects, onCreateProject, onCreateTask }) => {
               </h4>
               <div className="space-y-2 text-xs text-gray-600">
                 <div className="flex justify-between">
-                  <span>Total Projects</span>
-                  <span className="font-medium">{projects.length}</span>
+                  <span>Total Teams</span>
+                  <span className="font-medium">{teams.length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Active Tasks</span>
                   <span className="font-medium">
-                    {projects.reduce((sum, p) => sum + p.taskCount, 0)}
+                    {teams.reduce((sum, t) => sum + t.taskCount, 0)}
                   </span>
                 </div>
               </div>

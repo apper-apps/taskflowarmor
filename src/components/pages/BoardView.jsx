@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import KanbanColumn from "@/components/organisms/KanbanColumn";
+import { teamService } from "@/services/api/teamService";
+import { taskService } from "@/services/api/taskService";
+import { projectService } from "@/services/api/projectService";
+import ApperIcon from "@/components/ApperIcon";
 import TaskModal from "@/components/organisms/TaskModal";
+import KanbanColumn from "@/components/organisms/KanbanColumn";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
-import { taskService } from "@/services/api/taskService";
-import { projectService } from "@/services/api/projectService";
 
 const BoardView = ({ searchQuery }) => {
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
+const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTask, setSelectedTask] = useState(null);
@@ -22,12 +24,14 @@ const BoardView = ({ searchQuery }) => {
     try {
       setLoading(true);
       setError("");
-      const [tasksData, projectsData] = await Promise.all([
+const [tasksData, projectsData, teamsData] = await Promise.all([
         taskService.getAll(),
-        projectService.getAll()
+        projectService.getAll(),
+        teamService.getAll()
       ]);
       setTasks(tasksData);
       setProjects(projectsData);
+      setTeams(teamsData);
     } catch (err) {
       setError("Failed to load tasks and projects");
       console.error("Error loading data:", err);
@@ -95,9 +99,9 @@ const BoardView = ({ searchQuery }) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
-      task.title.toLowerCase().includes(query) ||
-      task.description.toLowerCase().includes(query) ||
-      (projects.find(p => p.Id === task.projectId)?.name.toLowerCase() || "").includes(query)
+task.title?.toLowerCase().includes(query) ||
+      task.description?.toLowerCase().includes(query) ||
+      (projects.find(p => p.Id === task.projectId)?.name?.toLowerCase() || "").includes(query)
     );
   });
 
@@ -177,7 +181,7 @@ const BoardView = ({ searchQuery }) => {
               title={column.title}
               status={column.status}
               tasks={column.tasks}
-              projects={projects}
+teams={teams}
               onTaskEdit={handleEditTask}
               onTaskDelete={handleDeleteTask}
               onTaskMove={handleMoveTask}

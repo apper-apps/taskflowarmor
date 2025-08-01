@@ -1,64 +1,63 @@
-import projectsData from "@/services/mockData/projects.json";
-
+import teamsData from "@/services/mockData/teams.json";
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-class ProjectService {
+class TeamService {
   constructor() {
-    this.projects = [...projectsData];
+    this.teams = [...teamsData];
   }
 
   async getAll() {
     await delay(250);
-    return [...this.projects];
+    return [...this.teams];
   }
 
   async getById(id) {
     await delay(200);
-    const project = this.projects.find(p => p.Id === id);
-    if (!project) {
-      throw new Error("Project not found");
+    const team = this.teams.find(t => t.Id === id);
+    if (!team) {
+      throw new Error("Team not found");
     }
-    return { ...project };
+    return { ...team };
   }
 
-  async create(projectData) {
+  async create(teamData) {
     await delay(400);
-    const newId = Math.max(...this.projects.map(p => p.Id), 0) + 1;
-    const newProject = {
+    const newId = Math.max(...this.teams.map(t => t.Id), 0) + 1;
+    const newTeam = {
       Id: newId,
-      ...projectData,
+      ...teamData,
       taskCount: 0,
       createdAt: new Date().toISOString()
     };
-    this.projects.push(newProject);
-    return { ...newProject };
+    this.teams.push(newTeam);
+    return { ...newTeam };
   }
 
-  async update(id, projectData) {
+  async update(id, teamData) {
     await delay(350);
-    const index = this.projects.findIndex(p => p.Id === id);
+    const index = this.teams.findIndex(t => t.Id === id);
     if (index === -1) {
-      throw new Error("Project not found");
+      throw new Error("Team not found");
     }
     
-    const updatedProject = {
-      ...this.projects[index],
-      ...projectData
+    const updatedTeam = {
+      ...this.teams[index],
+      ...teamData
     };
     
-    this.projects[index] = updatedProject;
-    return { ...updatedProject };
+    this.teams[index] = updatedTeam;
+    return { ...updatedTeam };
   }
 
   async delete(id) {
     await delay(250);
-    const index = this.projects.findIndex(p => p.Id === id);
+    const index = this.teams.findIndex(t => t.Id === id);
     if (index === -1) {
-      throw new Error("Project not found");
+      throw new Error("Team not found");
     }
-    this.projects.splice(index, 1);
+    this.teams.splice(index, 1);
     return true;
   }
 }
 
-export const projectService = new ProjectService();
+export const teamService = new TeamService();

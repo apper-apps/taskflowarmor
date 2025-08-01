@@ -1,21 +1,21 @@
 [
   {
     "Id": 1,
-    "name": "gigatech",
+    "name": "Website Redesign",
     "color": "blue",
     "taskCount": 3,
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
     "Id": 2,
-    "name": "expert guru",
+    "name": "API Development",
     "color": "green",
     "taskCount": 3,
     "createdAt": "2024-01-02T00:00:00Z"
   },
   {
     "Id": 3,
-    "name": "migrastudy",
+    "name": "DevOps Setup",
     "color": "purple",
     "taskCount": 2,
     "createdAt": "2024-01-03T00:00:00Z"

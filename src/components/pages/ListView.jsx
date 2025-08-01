@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import { teamService } from "@/services/api/teamService";
+import { taskService } from "@/services/api/taskService";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
 import TaskModal from "@/components/organisms/TaskModal";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { taskService } from "@/services/api/taskService";
-import { projectService } from "@/services/api/projectService";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 
 const ListView = ({ searchQuery }) => {
   const [tasks, setTasks] = useState([]);
-  const [projects, setProjects] = useState([]);
+const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTask, setSelectedTask] = useState(null);
@@ -25,12 +25,12 @@ const ListView = ({ searchQuery }) => {
     try {
       setLoading(true);
       setError("");
-      const [tasksData, projectsData] = await Promise.all([
+const [tasksData, teamsData] = await Promise.all([
         taskService.getAll(),
-        projectService.getAll()
+        teamService.getAll()
       ]);
       setTasks(tasksData);
-      setProjects(projectsData);
+      setTeams(teamsData);
     } catch (err) {
       setError("Failed to load tasks and projects");
       console.error("Error loading data:", err);
@@ -92,11 +92,11 @@ const ListView = ({ searchQuery }) => {
     }
   };
 
-  const getProject = (projectId) => {
-    return projects.find(p => p.Id === projectId);
+const getTeam = (projectId) => {
+    return teams.find(t => t.Id === projectId);
   };
 
-  const getProjectColorClass = (color) => {
+  const getTeamColorClass = (color) => {
     const colorMap = {
       blue: "bg-blue-500",
       green: "bg-green-500",
@@ -115,8 +115,8 @@ const ListView = ({ searchQuery }) => {
     const query = searchQuery.toLowerCase();
     return (
       task.title.toLowerCase().includes(query) ||
-      task.description.toLowerCase().includes(query) ||
-      (getProject(task.projectId)?.name.toLowerCase() || "").includes(query)
+task.description.toLowerCase().includes(query) ||
+      (getTeam(task.projectId)?.name.toLowerCase() || "").includes(query)
     );
   });
 
@@ -124,9 +124,9 @@ const ListView = ({ searchQuery }) => {
     let aValue = a[sortField];
     let bValue = b[sortField];
 
-    if (sortField === "project") {
-      aValue = getProject(a.projectId)?.name || "";
-      bValue = getProject(b.projectId)?.name || "";
+    if (sortField === "team") {
+      aValue = getTeam(a.projectId)?.name || "";
+      bValue = getTeam(b.projectId)?.name || "";
     }
 
     if (sortField === "dueDate" || sortField === "createdAt") {
@@ -222,12 +222,12 @@ const ListView = ({ searchQuery }) => {
                     </button>
                   </th>
                   <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleSort("project")}
+<button
+                      onClick={() => handleSort("team")}
                       className="flex items-center space-x-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
                     >
-                      <span>Project</span>
-                      <SortIcon field="project" />
+                      <span>Team</span>
+                      <SortIcon field="team" />
                     </button>
                   </th>
                   <th className="px-6 py-3 text-left">
@@ -246,7 +246,7 @@ const ListView = ({ searchQuery }) => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedTasks.map((task) => {
-                  const project = getProject(task.projectId);
+const team = getTeam(task.projectId);
                   return (
                     <tr key={task.Id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
@@ -274,10 +274,10 @@ const ListView = ({ searchQuery }) => {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        {project && (
+                        {team && (
                           <div className="flex items-center space-x-2">
-                            <div className={`w-3 h-3 rounded-full ${getProjectColorClass(project.color)}`} />
-                            <span className="text-sm text-gray-900">{project.name}</span>
+                            <div className={`w-3 h-3 rounded-full ${getTeamColorClass(team.color)}`} />
+                            <span className="text-sm text-gray-900">{team.name}</span>
                           </div>
                         )}
                       </td>
@@ -313,11 +313,11 @@ const ListView = ({ searchQuery }) => {
         </div>
       )}
 
-      <TaskModal
+<TaskModal
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
         task={selectedTask}
-        projects={projects}
+        projects={teams}
         onSave={handleSaveTask}
       />
     </div>

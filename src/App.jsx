@@ -1,33 +1,33 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import TeamsView from "@/components/pages/TeamsView";
+import TeamModal from "@/components/organisms/TeamModal";
+import { teamService } from "@/services/api/teamService";
+import "@/index.css";
+import { taskService } from "@/services/api/taskService";
+import TaskModal from "@/components/organisms/TaskModal";
 import Header from "@/components/organisms/Header";
 import Sidebar from "@/components/organisms/Sidebar";
 import BoardView from "@/components/pages/BoardView";
 import ListView from "@/components/pages/ListView";
-import ProjectsView from "@/components/pages/ProjectsView";
-import TaskModal from "@/components/organisms/TaskModal";
-import ProjectModal from "@/components/organisms/ProjectModal";
-import { taskService } from "@/services/api/taskService";
-import { projectService } from "@/services/api/projectService";
-import { toast } from "react-toastify";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [teams, setTeams] = useState([]);
   const [projects, setProjects] = useState([]);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-
-  React.useEffect(() => {
-    const loadProjects = async () => {
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+React.useEffect(() => {
+    const loadTeams = async () => {
       try {
-        const projectsData = await projectService.getAll();
-        setProjects(projectsData);
+        const teamsData = await teamService.getAll();
+        setTeams(teamsData);
       } catch (err) {
-        console.error("Error loading projects:", err);
+        console.error("Error loading teams:", err);
       }
     };
-    loadProjects();
+    loadTeams();
   }, []);
 
   const handleSearchChange = (e) => {
@@ -38,8 +38,8 @@ function App() {
     setIsTaskModalOpen(true);
   };
 
-  const handleCreateProject = () => {
-    setIsProjectModalOpen(true);
+const handleCreateTeam = () => {
+    setIsTeamModalOpen(true);
   };
 
   const handleSaveTask = async (taskData) => {
@@ -52,14 +52,14 @@ function App() {
     }
   };
 
-  const handleSaveProject = async (projectData) => {
+const handleSaveTeam = async (teamData) => {
     try {
-      const newProject = await projectService.create(projectData);
-      setProjects(prev => [...prev, newProject]);
-      toast.success("Project created successfully!");
+      const newTeam = await teamService.create(teamData);
+      setTeams(prev => [...prev, newTeam]);
+      toast.success("Team created successfully!");
     } catch (err) {
-      toast.error("Failed to create project");
-      console.error("Error creating project:", err);
+      toast.error("Failed to create team");
+      console.error("Error creating team:", err);
     }
   };
 
@@ -82,18 +82,18 @@ function App() {
                 path="/list" 
                 element={<ListView searchQuery={searchQuery} />} 
               />
-              <Route 
-                path="/projects" 
-                element={<ProjectsView searchQuery={searchQuery} />} 
+<Route 
+                path="/teams" 
+                element={<TeamsView searchQuery={searchQuery} />} 
               />
             </Routes>
           </main>
         </div>
 
         <Sidebar 
-          projects={projects}
+teams={teams}
           onCreateTask={handleCreateTask}
-          onCreateProject={handleCreateProject}
+          onCreateTeam={handleCreateTeam}
         />
 
         <TaskModal
@@ -104,11 +104,11 @@ function App() {
           onSave={handleSaveTask}
         />
 
-        <ProjectModal
-          isOpen={isProjectModalOpen}
-          onClose={() => setIsProjectModalOpen(false)}
-          project={null}
-          onSave={handleSaveProject}
+<TeamModal
+          isOpen={isTeamModalOpen}
+          onClose={() => setIsTeamModalOpen(false)}
+          team={null}
+          onSave={handleSaveTeam}
         />
 
         <ToastContainer

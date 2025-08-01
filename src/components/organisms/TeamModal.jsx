@@ -4,17 +4,17 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import ProjectColorPicker from "@/components/molecules/ProjectColorPicker";
 
-const ProjectModal = ({ isOpen, onClose, project, onSave }) => {
+const TeamModal = ({ isOpen, onClose, team, onSave }) => {
   const [formData, setFormData] = useState({
     name: "",
     color: "blue"
   });
 
   useEffect(() => {
-    if (project) {
+    if (team) {
       setFormData({
-        name: project.name || "",
-        color: project.color || "blue"
+        name: team.name || "",
+        color: team.color || "blue"
       });
     } else {
       setFormData({
@@ -22,7 +22,7 @@ const ProjectModal = ({ isOpen, onClose, project, onSave }) => {
         color: "blue"
       });
     }
-  }, [project, isOpen]);
+  }, [team, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ const ProjectModal = ({ isOpen, onClose, project, onSave }) => {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            {project ? "Edit Project" : "Create New Project"}
+            {team ? "Edit Team" : "Create New Team"}
           </h2>
           <button
             onClick={onClose}
@@ -66,19 +66,19 @@ const ProjectModal = ({ isOpen, onClose, project, onSave }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Project Name *
+              Team Name *
             </label>
             <Input
               value={formData.name}
               onChange={handleChange("name")}
-              placeholder="Enter project name..."
+              placeholder="Enter team name..."
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              Project Color
+              Team Color
             </label>
             <ProjectColorPicker
               selectedColor={formData.color}
@@ -95,7 +95,7 @@ const ProjectModal = ({ isOpen, onClose, project, onSave }) => {
               Cancel
             </Button>
             <Button type="submit">
-              {project ? "Update Project" : "Create Project"}
+              {team ? "Update Team" : "Create Team"}
             </Button>
           </div>
         </form>
@@ -104,4 +104,4 @@ const ProjectModal = ({ isOpen, onClose, project, onSave }) => {
   );
 };
 
-export default ProjectModal;
+export default TeamModal;
