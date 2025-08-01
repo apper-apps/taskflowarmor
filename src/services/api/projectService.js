@@ -1,63 +1,75 @@
-import teamsData from "@/services/mockData/teams.json";
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+import projectsData from '@/services/mockData/projects.json';
 
-class TeamService {
+// Simulate API delay
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+class ProjectService {
   constructor() {
-    this.teams = [...teamsData];
+    this.projects = [...projectsData];
   }
 
+  // Get all projects
   async getAll() {
-    await delay(250);
-    return [...this.teams];
+    await delay(300);
+    return this.projects;
   }
 
+  // Get project by ID
   async getById(id) {
     await delay(200);
-    const team = this.teams.find(t => t.Id === id);
-    if (!team) {
-      throw new Error("Team not found");
+    const project = this.projects.find(project => project.id === id);
+    if (!project) {
+      throw new Error('Project not found');
     }
-    return { ...team };
+    return project;
   }
 
-  async create(teamData) {
+  // Get projects by team ID
+  async getByTeamId(teamId) {
+    await delay(200);
+    return this.projects.filter(project => project.teamId === teamId);
+  }
+
+  // Create new project
+  async create(projectData) {
     await delay(400);
-    const newId = Math.max(...this.teams.map(t => t.Id), 0) + 1;
-    const newTeam = {
-      Id: newId,
-      ...teamData,
-      taskCount: 0,
-      createdAt: new Date().toISOString()
+    const newProject = {
+      id: Math.max(...this.projects.map(p => p.id)) + 1,
+      ...projectData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
-    this.teams.push(newTeam);
-    return { ...newTeam };
+    this.projects.push(newProject);
+    return newProject;
   }
 
-  async update(id, teamData) {
-    await delay(350);
-    const index = this.teams.findIndex(t => t.Id === id);
+  // Update project
+  async update(id, projectData) {
+    await delay(300);
+    const index = this.projects.findIndex(project => project.id === id);
     if (index === -1) {
-      throw new Error("Team not found");
+      throw new Error('Project not found');
     }
-    
-    const updatedTeam = {
-      ...this.teams[index],
-      ...teamData
+    this.projects[index] = {
+      ...this.projects[index],
+      ...projectData,
+      updatedAt: new Date().toISOString()
     };
-    
-    this.teams[index] = updatedTeam;
-    return { ...updatedTeam };
+    return this.projects[index];
   }
 
+  // Delete project
   async delete(id) {
-    await delay(250);
-    const index = this.teams.findIndex(t => t.Id === id);
+    await delay(300);
+    const index = this.projects.findIndex(project => project.id === id);
     if (index === -1) {
-      throw new Error("Team not found");
+      throw new Error('Project not found');
     }
-    this.teams.splice(index, 1);
+    this.projects.splice(index, 1);
     return true;
   }
 }
 
-export const teamService = new TeamService();
+export const projectService = new ProjectService();
