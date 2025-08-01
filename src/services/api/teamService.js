@@ -2,7 +2,7 @@ import projectsData from "@/services/mockData/projects.json";
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-class ProjectService {
+class TeamService {
   constructor() {
     this.projects = [...projectsData];
   }
@@ -61,4 +61,4 @@ class ProjectService {
   }
 }
 
-export const projectService = new ProjectService();
+export const teamService = new TeamService();
