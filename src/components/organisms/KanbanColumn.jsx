@@ -32,8 +32,11 @@ const KanbanColumn = ({
     onTaskMove(taskId, status);
   };
 
-  const getProject = (projectId) => {
-    return projects.find(p => p.Id === projectId);
+const getProject = (projectId) => {
+    if (!projects || !Array.isArray(projects) || !projectId) {
+      return null;
+    }
+    return projects.find(p => p.Id === projectId) || null;
   };
 
   return (
