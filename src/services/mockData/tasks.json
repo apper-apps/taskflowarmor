@@ -1,0 +1,90 @@
+[
+  {
+    "Id": 1,
+    "title": "Design landing page mockup",
+    "description": "Create wireframes and visual mockups for the new product landing page with mobile-first approach",
+    "status": "in-progress",
+    "priority": "high",
+    "dueDate": "2024-01-15",
+    "projectId": 1,
+    "createdAt": "2024-01-08T10:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 2,
+    "title": "Implement user authentication",
+    "description": "Set up secure login system with JWT tokens and password encryption",
+    "status": "todo",
+    "priority": "high",
+    "dueDate": "2024-01-20",
+    "projectId": 2,
+    "createdAt": "2024-01-08T11:30:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 3,
+    "title": "Write API documentation",
+    "description": "Document all REST endpoints with examples and response schemas",
+    "status": "done",
+    "priority": "medium",
+    "dueDate": "2024-01-12",
+    "projectId": 2,
+    "createdAt": "2024-01-05T09:15:00Z",
+    "completedAt": "2024-01-12T14:30:00Z"
+  },
+  {
+    "Id": 4,
+    "title": "Set up CI/CD pipeline",
+    "description": "Configure automated testing and deployment workflow using GitHub Actions",
+    "status": "todo",
+    "priority": "medium",
+    "dueDate": "2024-01-25",
+    "projectId": 3,
+    "createdAt": "2024-01-08T14:20:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 5,
+    "title": "Conduct user research interviews",
+    "description": "Interview 10 potential users to gather feedback on product features and usability",
+    "status": "in-progress",
+    "priority": "low",
+    "dueDate": "2024-01-18",
+    "projectId": 1,
+    "createdAt": "2024-01-07T16:45:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 6,
+    "title": "Optimize database queries",
+    "description": "Improve performance of slow queries and add proper indexes",
+    "status": "todo",
+    "priority": "medium",
+    "dueDate": "2024-01-22",
+    "projectId": 2,
+    "createdAt": "2024-01-08T13:10:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 7,
+    "title": "Create brand style guide",
+    "description": "Develop comprehensive brand guidelines including colors, typography, and logo usage",
+    "status": "done",
+    "priority": "low",
+    "dueDate": "2024-01-10",
+    "projectId": 1,
+    "createdAt": "2024-01-03T12:00:00Z",
+    "completedAt": "2024-01-10T17:20:00Z"
+  },
+  {
+    "Id": 8,
+    "title": "Deploy staging environment",
+    "description": "Set up staging server for testing before production deployment",
+    "status": "in-progress",
+    "priority": "high",
+    "dueDate": "2024-01-16",
+    "projectId": 3,
+    "createdAt": "2024-01-06T08:30:00Z",
+    "completedAt": null
+  }
+]
